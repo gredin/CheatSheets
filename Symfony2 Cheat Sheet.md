@@ -129,20 +129,59 @@ cas où on ne veut pas une association object <=> form, mais simplement un table
 Doctrine
 $em = $this->getDoctrine()->getManager();
 
-Tests
------
+
+
+Tests unitaires
+---------------
 
 Répliquer la structure du Bundle dans Tests/
 
-Tests unitaires
+Classe de test
 
-    extends \PHPUnit_Framework_TestCase
+    class ExempleTest extends \PHPUnit_Framework_TestCase
+    {
+        public function setUp() {
 
-    $this->assert*();
+        }
+
+        public function testMethode() {
+            $this->assert*();
+        }
+
+    }
 
 Tests fonctionnels
-    = test d'un contrôleur, généralement
+------------------
 
-    extends TestWebCase (?)
-    $client
-    $crawler
+= test d'un contrôleur, généralement
+
+### Classe de test
+
+    use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+
+    class ExempleTest extends WebTestCase { }
+
+### Exécuter une requête
+
+    $crawler = $client->request('GET', '/signup')
+
+### Réponse
+
+    $response = $client->getResponse();
+
+### Traverser le DOM (HTML/XML)
+
+    $crawler->filter()
+
+### Suivre un lien
+
+    $link = $crawler->selectLink('Link text')->link();
+    
+    $client->click($link);
+
+### Remplir un formulaire et le soumettre
+
+    $form = $crawler->selectButton('Button text')->form();
+
+    $client->submit($form);
+
