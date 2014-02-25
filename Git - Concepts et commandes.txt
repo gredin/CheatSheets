@@ -1,0 +1,206 @@
+Concepts
+
+    3 espaces
+        - working directory
+            les fichiers tels que sur le disque
+        - staging area (appelé aussi : index)
+            ce qui va être ajouté au prochain commit
+        - repository (local ou distant)
+            la base de données Git
+
+    Commit  : un snapshot complet plutôt qu'une différence avec le commit précédent
+    Branche : un simple pointeur vers un commit (ce pointeur se déplace lorsque de nouveaux commits apparaissent)
+
+    Un commit pointe vers son (ses) commit(s) parents. Un merge commit pointe vers au moins 2 parents.
+
+    branche =(pointe vers)=> commit =(pointe vers)=> tree =(pointe vers)=> blobs
+
+    Git utilise énormément l'algorithme de hachage SHA-1 pour identifier les commits, des données...
+    On n'est pas obligé d'utiliser systématiquement les chaînes alphanumériques de 40 caractères (le début - moins de 10 caractères - suffisent généralement).
+
+    Pour la plupart des commandes, on peut utiliser indifféremment :
+    - l'identifiant SHA-1 d'un commit
+    - le nom d'une branche
+    - un tag
+    - HEAD ou une des déclinaisons telles que HEAD^, HEAD~3...
+
+    master                : branche de développement par défaut
+    origin                : dépôt distant par défaut
+    HEAD                  : pointeur vers la branche courante
+    HEAD^[n]              :
+    HEAD~[n]              :
+    HEAD@{[n]}            :
+    [branche]..[branche]  :
+    [branche]...[branche] :
+    [remote]/[branche]    : branche locale qui représente l'état de la branche distante telle que "vue" la dernière fois (lors du dernier fetch)
+
+    Aide
+        git help [commande]
+
+Dépôt local
+
+    Initialiser un dépôt
+        git init
+
+    Copier un dépôt distant vers un dépôt local
+        git clone [URL]
+
+Dépôt distant
+
+    Lister les dépôts distants
+        git remote
+
+    Télécharger les données du dépôt distant
+        git fetch [remote]
+        git fetch [remote] [branche]
+
+    Télécharger les données d'une branche distante et la merger dans la branche courante du dépôt local
+        git pull [remote] [branche]
+        <=> git fetch [remote] [branche] & git merge [remote]/[branche]
+
+    Envoyer la branche courante du dépôt local vers une branche du dépôt distant
+        git push [remote] [branche]
+
+    Supprimer une branche distante
+        git push [remote] :[branche]
+
+Inspecter
+
+    Etat des espaces (staging area et working directory)
+        git status
+
+    Montrer un commit, une branche, un tag...
+        git show [commit/branche/tag...]
+
+    Différences entre le working directory et le dernier commit
+    (le contenu de la staging area n'est pas pris en compte)
+        git diff
+
+    Différences entre la staging area et le dernier commit
+        git diff --cached
+
+    Différences entre deux branches
+        git diff [branche] [branche]
+
+    Historique des commits
+        git log
+        git log --stat
+
+Commit
+
+    Ajouter/déplacer/supprimer dans la staging area
+        git add/mv/rm [fichier]
+
+    Commit
+        git commit -m "[message]"
+
+
+        git commit -a -m "[message]"
+        <=> git add [fichiers déjà trackés] & git commit -m "[message]"
+
+Annuler et corriger
+
+    Revert
+        Créer un commit qui annule les modifications introduites par un commit donné
+            git revert [commit]
+        Annuler le dernier commit
+            git revert HEAD
+        Annuler l'avant-dernier commit
+            git revert HEAD^
+
+    Corriger le dernier commit
+        git add/mv/rm [fichiers oubliés]
+        git commit --amend -m "[message]"
+
+    Enlever un fichier de la staging area
+        git reset HEAD [fichier]
+
+    Working directory et staging area remis à l'état du dernier commit
+    (attention, perte des modifs faites depuis)
+        git reset --hard HEAD
+
+    Annuler les modifcations d'un fichier
+        git checkout -- [fichier]
+        <=> git checkout HEAD [fichier]
+
+Branches
+
+    Lister les branches
+        Locales
+            git branch
+        Distantes
+            git branch -r
+
+    Se positionner sur une branche
+        git checkout [branche]
+
+    Créer une branche et se positionner dessus
+        git checkout -b [branche]
+        <=> git branch [branche] & git checkout [branche]
+
+    Supprimer une branche Locale
+        Branche déjà mergée
+            git checkout -d [branche]
+        Branche pas encore mergée
+            git checkout -D [branche]
+
+Merge
+
+    Merger une branche donnée dans la branche courante
+        git merge [branche]
+
+    Rebase
+    Rejoue l'ensemble des changements depuis l'ancêtre commun à partir du HEAD de la branche de base
+
+        git rebase [branche de base]
+
+        git rebase -i HEAD~[n]
+
+        N.B. "Do not rebase commits that you have pushed to a public repository."
+
+    Cherry pick
+    Applique les changements introduits par un commit donné (crée un commit)
+
+        git cherry-pick [commit]
+
+    Remplacer un fichier du working directory par la version d'une autre branche
+        git checkout [branche] [fichier]
+
+    Résoudre un conflit
+        <<<<<<< HEAD
+        ...
+        =======
+        ...
+        >>>>>>> [branche à merger]
+
+        git add [fichiers conflictuels]
+        git commit
+
+Stash
+    git stash list
+    git stash
+    git stash pop
+
+Débug
+
+    Lister le dernier commit et l'auteur pour chaque ligne d'un fichier
+        Tout le fichier
+            git blame [fichier]
+        Une portion du fichier
+            git blame -L [ligne],[ligne] [fichier]
+
+    Identifier le commit qui a introduit un bug
+        git bisect start
+        git bisect bad [commit]
+        git bisect good [commit]
+        ...
+        git bisect reset
+
+Tags
+Application : marquer une version particulière d'un logiciel
+
+    Lister les tags
+        git tag
+
+    Créer un tag
+        git tag [nom du tag]
