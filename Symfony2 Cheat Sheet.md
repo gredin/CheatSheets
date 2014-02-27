@@ -4,7 +4,7 @@ Symfony2 Cheat Sheet
 Application
 -----------
 
-Structure
+### Structure
 
     app/
         config/
@@ -81,7 +81,7 @@ Routing
 Doctrine
 --------
 
-Console Commands
+### Console Commands
 
 - créer la base de données
 
@@ -99,7 +99,7 @@ Console Commands
 
         php app/console doctrine:schema:update --force
 
-Annotations
+### Annotations
 
     use <namespace\Mapping> as ORM;
 
@@ -185,3 +185,54 @@ Tests fonctionnels
 
     $client->submit($form);
 
+Validation
+----------
+
+Validation implicite des formulaires
+Validation explicite d'objets, tableaux et variables en utilisant le service de validation
+
+Notion de contrainte
+
+validation peut porter sur
+- propriété d'une classe
+- getter (is*(), get*())
+- classe
+
+### Annotations
+
+@Assert\[ConstraintName]
+
+    use Symfony\Component\Validator\Constraints as Assert;
+
+    class BlogArticle
+    {
+        /**
+         * @Assert\NotBlank()
+         */
+        private $subject;
+
+        /**
+         * @Assert\Length(
+         *      min = 3,
+         *      minMessage = "C'est trop court !"
+         * )
+         */
+        private $content;
+    }
+
+Validation explicite
+
+    $validator = $this->get('validator');
+    $errors = $validator->validate($blogArticle);
+
+    if (count($errors) > 0) { }
+
+Validation group sequence
+
+Validation group sequence provider
+
+Validation de variables simples
+
+    use \Constraint;
+
+    $validator = $this->validateValue($value, new Constraint());
