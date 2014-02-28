@@ -236,3 +236,58 @@ Validation de variables simples
     use \Constraint;
 
     $validator = $this->validateValue($value, new Constraint());
+
+Routing
+-------
+
+contact:
+    path:     /blog/article/{articleId}
+    defaults: { _controller: GredinDemoBundle:Blog:read }
+    requirements: { articleId: \d+ }
+    
+Exemple synthétique
+
+    article_show:
+        path:     /{_locale}/article/{year}/{title}.{_format}
+        defaults: { _controller: GredinDemoBundle:Article:show, _locale: en, _format: html }
+        methods:  [GET]
+        condition: "request.headers.get('User-Agent') matches '/firefox/i'"
+        requirements:
+            _locale:  en|fr
+            _format:  html|json|rss
+            year:     \d+
+
+Syntaxe du contrôleur
+    [bundle]:[contrôleur]:[action]
+
+    GredinDemoBundle:Article:show
+    <=>
+    Gredin\DemoBundle\Controller\ArticleController::showAction
+
+Tous les paramètres sont disponibles comme argument du contrôleur, dans n'importe quel ordre.
+
+    showAction($year, $_format, $title)
+    showAction($title)
+
+Importation des routes d'un bundle dans app/config/routing.yml
+(avec ajout d'un préfixe à toutes ces routes)
+
+    gredin_cantata:
+        resource: "@GredinDemoBundle/Resources/config/routing.yml"
+        prefix:   /demo
+
+Débug
+
+    app/console router:debug
+
+    app/console router:debug [nom de la route]
+
+    app/console router:match /blog/article/bla-bla-bla
+
+Génération d'URL
+
+    $this->get('router')->...()
+
+Template
+
+    <a href="{{ path('blog_show', {'slug': 'my-blog-post'}) }}">Read article</a>
